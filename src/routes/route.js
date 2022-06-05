@@ -2,77 +2,45 @@ const express = require('express');
 
 const router = express.Router();
 
-let listOfMovies = ["Top Gun", "Kashmir Files", "Battleship", "Article 15"]
-let len = listOfMovies.length
+router.get('/sol1', function(req, res) {
 
-// Problem Statement 1
+    //logic : sum of numbers is n(n+1)/2..so get sum of all numbers in array. now take sum of numbers till last digit in the array
+    let arr = [1, 2, 3, 5, 6, 7]
+    let len = arr.length
 
-router.get('/movies', function(req, res) {
+    let sumOfGivenArray = 0
+    for (let i = 0; i < len; i++) {
+        sumOfGivenArray = sumOfGivenArray + arr[i]
+    }
 
-    res.send(listOfMovies)
+    let sumofAllNumbers = ((len + 1) * (len + 2)) / 2
 
+    let missingNumber = sumofAllNumbers - sumOfGivenArray
+
+    console.log("The missing Number is: " + missingNumber)
+
+    res.send({
+        "The missing Number is: ": missingNumber
+    });
 });
 
-//Problem Statement 2 and 3
 
-router.get('/movies/:indexNumber', function(req, res) {
-    let result = false
-    let i = 0
-    for (i = 0; i < len; i++) {
-        if (req.params.indexNumber == i) {
-            result = true
-            break;
-        }
-    }
-    if (result) {
-        res.send(listOfMovies[i])
-    } else {
-        res.send("Use a valid Index")
-    }
-});
+router.get("/sol2", function(req, res) {
+    //logic : sum of n consecutive numbers is [ n * (first + last) / 2  ]..so get sum of all numbers in array. now take sum of n consecutive numbers.. n would be length+1 as 1 number is missing
+    let arr = [33, 34, 35, 37, 38]
+    let len = arr.length
 
-let listOfFilms = [{
-    "id": 1,
-    "name": "The Shining"
-}, {
-    "id": 2,
-    "name": "Incendies"
-}, {
-    "id": 3,
-    "name": "Rang De Basanti"
-}, {
-    "id": 4,
-    "name": "Finding Nemo"
-}]
-
-let len1 = listOfFilms.length
-
-// Problem Statement 4
-
-router.get('/films', function(req, res) {
-
-    res.send(listOfFilms)
-
-});
-
-//Problem Statement 5
-
-router.get('/films/:filmId', function(req, res) {
-    let result1 = false
-    let i = 0
-    for (i = 0; i < len1; i++) {
-        if (req.params.filmId == listOfFilms[i].id) {
-            result1 = true
-            break;
-        }
-    }
-    if (result1) {
-        res.send(listOfFilms[i])
-    } else {
-        res.send("No Movie Exists with this ID.")
+    let sumOfGivenArray = 0;
+    for (var i in arr) {
+        sumOfGivenArray += arr[i];
     }
 
+    let firstDigit = arr[0]
+    let lastDigit = arr.pop()
+    let sumOfAllNumbers = (len + 1) * (firstDigit + lastDigit) / 2
+    let missingNumber = sumOfAllNumbers - sumOfGivenArray
+
+    res.send({ "The missing Number is: ": missingNumber });
 });
 
 module.exports = router;
-// adding this comment for no reason
