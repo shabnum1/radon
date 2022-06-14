@@ -1,16 +1,19 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 
-const createUser = async function (abcd, xyz) {
+
+//create a user
+const createUser = async function (req, res) {
   //You can name the req, res objects anything.
   //but the first parameter is always the request 
   //the second parameter is always the response
-  let data = abcd.body;
+  let data = req.body;
   let savedData = await userModel.create(data);
-  console.log(abcd.newAtribute);
-  xyz.send({ msg: savedData });
+  
+  res.send({ msg: savedData });
 };
 
+//user login
 const loginUser = async function (req, res) {
   let userName = req.body.emailId;
   let password = req.body.password;
@@ -31,7 +34,7 @@ const loginUser = async function (req, res) {
   let token = jwt.sign(
     {
       userId: user._id.toString(),
-      batch: "thorium",
+      batch: "radon",
       organisation: "FunctionUp",
     },
     "functionup-radon"
@@ -40,6 +43,7 @@ const loginUser = async function (req, res) {
   res.send({ status: true, token: token });
 };
 
+//get the details of user
 const getUserData = async function (req, res) {
   let token = req.headers["x-Auth-token"];
   if (!token) token = req.headers["x-auth-token"];
@@ -66,6 +70,9 @@ const getUserData = async function (req, res) {
   res.send({ status: true, data: userDetails });
 };
 
+
+
+//update user details
 const updateUser = async function (req, res) {
 // Do the same steps here:
 // Check if the token is present
@@ -84,7 +91,24 @@ const updateUser = async function (req, res) {
   res.send({ status: updatedUser, data: updatedUser });
 };
 
+
+
+//it will show deleted but the data will exist in db
+const deleteUser = async (req, res)=>{
+
+  let userId = req.params.userId;
+  let user = await userModel.findById(userId);
+  if (!user) {
+    return res.send("No such user exists");
+  }
+
+  let updateUser = await userModel.findOneAndUpdate({_id: userId}, {$set:{isDeleted:true}}, {new: true});
+  res.send({ status: true , msg : updateUser})
+  console.log("Your Data is Deleted")
+}
+
 module.exports.createUser = createUser;
 module.exports.getUserData = getUserData;
 module.exports.updateUser = updateUser;
 module.exports.loginUser = loginUser;
+module.exports.deleteUser=deleteUser;
